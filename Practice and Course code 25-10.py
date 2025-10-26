@@ -108,6 +108,56 @@ for i in range(0,len(dna_seq),1):
 rna_transcription = ''.join(rna_list)
 print(rna_list)
 print(rna_transcription)
+#Translating nucleotides to aa:
+
+from Bio import SeqIO
+codon_to_aa_table = {
+    "ATA":"I", "ATC":"I", "ATT":"I", "ATG":"M",
+    "ACA":"T", "ACC":"T", "ACG":"T", "ACT":"T",
+    "AAC":"N", "AAT":"N", "AAA":"K", "AAG":"K",
+    "AGC":"S", "AGT":"S", "AGA":"R", "AGG":"R",
+    "CTA":"L", "CTC":"L", "CTG":"L", "CTT":"L",
+    "CCA":"P", "CCC":"P", "CCG":"P", "CCT":"P",
+    "CAC":"H", "CAT":"H", "CAA":"Q", "CAG":"Q",
+    "CGA":"R", "CGC":"R", "CGG":"R", "CGT":"R",
+    "GTA":"V", "GTC":"V", "GTG":"V", "GTT":"V",
+    "GCA":"A", "GCC":"A", "GCG":"A", "GCT":"A",
+    "GAC":"D", "GAT":"D", "GAA":"E", "GAG":"E",
+    "GGA":"G", "GGC":"G", "GGG":"G", "GGT":"G",
+    "TCA":"S", "TCC":"S", "TCG":"S", "TCT":"S",
+    "TTC":"F", "TTT":"F", "TTA":"L", "TTG":"L",
+    "TAC":"Y", "TAT":"Y", "TAA":"_", "TAG":"_",
+    "TGC":"C", "TGT":"C", "TGA":"_", "TGG":"W",}
+
+import os
+
+print("Running from:", os.getcwd())
+print("Files in this directory:", os.listdir())
+
+#Parse takes two arguments, the file name (1) and the format the file needs to be dealt with in.
+#Seq_Record is the variable name we assign to the E Coli sequence file we are working with.
+#Parse() converts raw data to a 'defined object' meaning the data is stored in a defined format with parts named.
+#SeqIO is a module in the biopython library-it is for writing and reading sequence files.
+#SeqI0.parse() is a way to create a type of data object called SeqRecord which: #Reads file line by line.
+#Stores header and seq separately under separate variable names, record.id=seq name from FASTA header and record.seq=sequence itself.
+#SeqIO.parse() does not create SeqRecord objects immediately.
+#It sets up a generator that knows how to create them only if you ask, hence we must use next() despite there being only one seq in our file.
+#'next' takes the first sequence generated, i.e. the first Seq_Record data object. Since many seq files have multiple sequences,
+#genes, etc the SeqIO.parse() code will create multiple data objects. We want the first one so we use next(). In our case its not necessary
+#since there is only one seq in our file.
+
+Seq_Record = next(SeqIO.parse('Data/Ecoli_K12_50kb.fasta', 'fasta'))
+#This line of code takes the sequence part of the SeqRecord object and stores it in the E_Coli_seq variable.
+E_Coli_seq = Seq_Record.seq
+#E_Coli_seq is now a seq data object(no metadata), it has only the sequence information no ID hence it is not a SeqRecord data object.
+print(Seq_Record.id)
+print(len(E_Coli_seq))
+#Translating the EColi Seq file:
+print(E_Coli_seq.translate())
+#Too many stop codons present, including a few aas in which cant eb correct for a random stretch of genomic DNA, hence reading frame is wrong.
+#I can find real ORFs by finding stretches from a start codon to a stop codon. These are gene regions, other regions could well be non-coding.
+
+
 
 
 #>Python for Biologists Course: Coursera Course
