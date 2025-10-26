@@ -154,7 +154,7 @@ print(Seq_Record.id)
 print(len(E_Coli_seq))
 #Translating the EColi Seq file:
 print(E_Coli_seq.translate())
-#Too many stop codons present, including a few aas in which cant eb correct for a random stretch of genomic DNA, hence reading frame is wrong.
+#Too many stop codons present, including a few aas in which can't be correct for a random stretch of genomic DNA, hence reading frame is wrong.
 #I can find real ORFs by finding stretches from a start codon to a stop codon. These are gene regions, other regions could well be non-coding.
 
 
