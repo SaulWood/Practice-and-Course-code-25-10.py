@@ -88,6 +88,30 @@ print(nucleotide_dict['A'])
 
 import Bio
 print(Bio.__version__)
+#Reversing dna seq.
+dna = "ATGACTAGCATCGATCG"
+rev_dna_seq = dna[::-1]
+print(rev_dna_seq)
+
+#Transcribe DNA → RNA
+dna_seq ='ATCGTAGCTATATCGCATATCGCGTAGTATCGTATATAGC'
+dict_replace = {'T':'U'}
+rna_list = []
+rna_transcription = ''
+for i in range(0,len(dna_seq),1):
+   nuc = dna_seq[i]
+   if nuc == 'T':
+       nuc  = dict_replace['T']
+
+   rna_list.append(nuc)
+
+rna_transcription = ''.join(rna_list)
+print(rna_list)
+print(rna_transcription)
+
+
+#>Python for Biologists Course: Coursera Course
+
 
 
 
