@@ -156,6 +156,18 @@ print(len(E_Coli_seq))
 print(E_Coli_seq.translate())
 #Too many stop codons present, including a few aas in which can't be correct for a random stretch of genomic DNA, hence reading frame is wrong.
 #I can find real ORFs by finding stretches from a start codon to a stop codon. These are gene regions, other regions could well be non-coding.
+k=3
+ORF_1_string = ""
+#This code assumes the start codon is at i=0 which is not necessarily true, highly unlikely to be true.
+'''for i in range(0, len(E_Coli_seq)-k+1,k):
+    codon = E_Coli_seq[i:i+k]
+    if codon == 'ATG' or codon == 'TTG' or codon == 'GTG':
+        string += codon
+    elif codon == 'TAA' or codon == 'TAG' or codon == 'TGA':
+        break
+print(ORF_string)'''
+
+
 
 
 
