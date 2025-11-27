@@ -166,9 +166,29 @@ ORF_1_string = ""
     elif codon == 'TAA' or codon == 'TAG' or codon == 'TGA':
         break
 print(ORF_string)'''
+#Code to find GC content for this E_coli Sequence.
+from Bio.Seq import Seq
+print(Bio.__version__)
+from Bio import Seq
+import Bio
+print('new')
+E_Coli_seq = E_Coli_seq.upper()
+
+A = E_Coli_seq.count('A')
+C = E_Coli_seq.count('C')
+G = E_Coli_seq.count('G')
+T = E_Coli_seq.count('T')
+#Sequence is 1913bp long therefore we use the equation GC% = (G + C)/(A + T + G + C) * 100
+GC_fraction = (G + C) / (len(E_Coli_seq))
+GC_percentage= GC_fraction * 100
+
+print(A)
+print(C)
+print(G)
+print(T)
 
 
-
+print(E_Coli_seq)
 
 
 
