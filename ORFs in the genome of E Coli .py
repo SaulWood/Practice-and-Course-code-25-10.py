@@ -124,29 +124,37 @@ current_rf0_ORF = ""
 for i in range(0, len(seq)-2,3):
     codon = seq[i:i+3]
 
-    if codon in START:
+    if in_rf0_ORF == False:
+       if codon in START:
         in_rf0_ORF = True
         current_rf0_ORF = codon
-    else:
-        current_rf0_ORF += codon
-    if codon in STOP:
+
+    else:#codon is in ORF.
+       if codon in STOP:
         ORF_rf0_list.append(current_rf0_ORF)
-        current_orf = ""
-        in_orf = False
+        current_rf0_ORF = ""
+        in_rf0_ORF = False
+       else:
+         current_rf0_ORF += codon
+
+
+
+
+
 
 print("Number of ORFs found:", len(ORF_rf0_list))
 print("First ORF:", ORF_rf0_list[0])
 
-
 print("first 20", ORF_rf0_list[0:20])
 #I need to translate this list of ORFs as nucleotide strings in RF0 into aa sequences-this requires the nt strings becoming seq objects so translate() function can work...
-
 #%%
-
 aa_ORF0 = [str(Seq(orf_nt).translate()) for orf_nt in ORF_rf0_list]
 orf0_long_aa=[]
 for i in aa_ORF0:
-    if len(i) > 300:
+    if len(i) > 400:
         orf0_long_aa.append(i)
 print(orf0_long_aa)
+print(len(orf0_long_aa))
+print(orf0_long_aa[0])
 #%%
+#This code is wrong now-there are clearly stop codons within translated sequences, this means I don't have true ORFs.
