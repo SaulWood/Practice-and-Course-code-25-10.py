@@ -124,17 +124,17 @@ current_rf0_ORF = ""
 for i in range(0, len(seq)-2,3):
     codon = seq[i:i+3]
 
-    if in_rf0_ORF == False:
-       if codon in START:
+    if not in_rf0_ORF:
+        if codon in START:
         in_rf0_ORF = True
         current_rf0_ORF = codon
 
     else:#codon is in ORF.
-       if codon in STOP:
+        if codon in STOP:
         ORF_rf0_list.append(current_rf0_ORF)
         current_rf0_ORF = ""
         in_rf0_ORF = False
-       else:
+        else:
          current_rf0_ORF += codon
 
 
@@ -158,3 +158,34 @@ print(len(orf0_long_aa))
 print(orf0_long_aa[0])
 #%%
 #This code is wrong now-there are clearly stop codons within translated sequences, this means I don't have true ORFs.
+
+#%%
+t_s = "TTTATGATCGATCTAAGATAATCTAGTAGCTAGTGTAGCATCGTGATACGACTAGCATATGATCGACTAGCTTAATACGATCG"
+print(len(t_s))
+print(126/3)
+
+start = {"ATG","GTG","TTG"}
+stop = {"TAA", "TAG","TGA"}
+ORF_test_list = []
+in_ORF = False
+current_ORF = ""
+for i in range(0, len(t_s)-2,3):
+    codon = t_s[i:i+3]
+
+    if not in_ORF:
+        if codon in start:
+        in_ORF = True
+        current_ORF = codon
+
+    else:#codon is in ORF.
+       if codon in stop:
+        ORF_test_list.append(current_ORF)
+        current_ORF = ""
+        in_ORF = False
+       else:
+         current_ORF += codon
+print(ORF_test_list)
+print(len(ORF_test_list[0]))
+print(len(ORF_test_list[1]))
+
+#%%
