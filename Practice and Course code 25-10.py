@@ -216,7 +216,8 @@ print(E_Coli_seq.translate())
 #'next' takes the first sequence generated, i.e. the first Seq_Record data object. Since many seq files have multiple sequences,
 #genes, etc the SeqIO.parse() code will create multiple data objects. We want the first one so we use next(). In our case its not necessary
 #since there is only one seq in our file.
-
+# %%
+from Bio import SeqIO
 EColi_WGS = next(SeqIO.parse('Data/EColi_WGS.fasta', 'fasta'))
 #This line of code takes the sequence part of the SeqRecord object and stores it in the E_Coli_seq variable.
 E_Coli_seq = EColi_WGS.seq
@@ -232,11 +233,14 @@ print(E_Coli_seq.translate())
 #A RF is the way that the DNA could be read for an entire genome-there are 3 of these possible for the forward strand and 3 possible for the reverse complement.
 #ORF on the other hand refers to the sub-regions of the RF that are between a start and a stop codon that could thus be translated.
 
-#Hence to find all (pretty much if we discount overlapping genes) of the genes this E Coli can produce we can translate all 6 RFs and then find the ORfs within each Rf which simply requires finding the
+#Hence to find all (pretty much if we discount overlapping genes) of the genes this E Coli can produce we can translate all 6 RFs and find the ORfs within each Rf which simply requires finding the
 # regions between the start and stop codons for each RF...We can use BLAST and visual inspection to decipher if a given AA seq is likely to produce a protein that is actually used in the E Coli
 #cell.
 
 from Bio import SeqIO
+
+
+#Function to create a list of codons for each forward frame 0,1 and 2 within the E Coi Genome.
 
 def codons_in_frame(seq: str, frame: int):
     """
@@ -265,6 +269,7 @@ print("RF0 first 20 codons:", rf0[:20])
 print("RF+1 first 20 codons:", rf1[:20])
 print("RF+2 first 20 codons:", rf2[:20])
 print("Lengths (codons):", len(rf0), len(rf1), len(rf2))
+# %%
 
 '''
 print(rf0.translate())
@@ -278,22 +283,23 @@ from Bio.Seq import Seq
 rf0_for_trans = "".join(rf0)
 rf1_for_trans = "".join(rf1)
 rf2_for_trans = "".join(rf2)
-#The translate() only works on seq objects, it doesnt work on python strings hence why I need Seq()
+#The translate() only works on seq objects, it doesn't work on python strings hence why I need Seq()
+#f=Forward strand
 
 rf0_F_final=Seq(rf0_for_trans).translate()
 print(rf0_F_final)
 
-rf1_F_final=Seq(rf1_for_trans).translate()
-print(rf1_F_final)
+#rf1_F_final=Seq(rf1_for_trans).translate()
+#print(rf1_F_final)
 
-rf2_F_final=Seq(rf2_for_trans).translate()
-print(rf2_F_final)
+#rf2_F_final=Seq(rf2_for_trans).translate()
+#print(rf2_F_final)
 
 #Now to find the ORFs:
 
 #Start codons in Bacteria:[ATG],[GTG],[TTG].
 #Stop codons in Bacteria:[TAA],[TAG],[TGA].
-
+'''
 START_CODONS = {"ATG","GTG","TTG"}
 STOP_CODONS = {"TAA", "TAG","TGA" }
 ORF_string = ''
@@ -306,7 +312,49 @@ for i in range(0, len(rf0_for_trans)-2,3):
     elif:
     window == 'TAA', 'TAG', 'TGA'
     break
+'''
+#This code above is wrong for various reasons...
+#As a reminder the goal is to find all the genes that are expressed in the E Coli genome...
+#The properties of
+
+#This code is designed to find all of the rf0 ORFs ie all the open reading frames within the frame shift 0 of the E Coli Genome.
+
+#%%
+rf0_for_trans = "".join(rf0)
+seq = rf0_for_trans
+START = {"ATG","GTG","TTG"}
+STOP = {"TAA", "TAG","TGA" }
+ORF_rf0_list = []
+in_rf0_ORF = False
+current_rf0_ORF = ""
+for i in range(0, len(seq)-2,3):
+    codon = seq[i:i+3]
+
+    if codon in START:
+        in_rf0_ORF = True
+        current_rf0_ORF = codon
+    else:
+        current_rf0_ORF += codon
+    if codon in STOP:
+        ORF_rf0_list.append(current_rf0_ORF)
+        current_orf = ""
+        in_orf = False
+
+print("Number of ORFs found:", len(ORF_rf0_list))
+print("First ORF:", ORF_rf0_list[0])
+
+#%%
+#%%
+print("first 20", ORF_rf0_list[0:20])
+#%%
+#I need to translate this list of ORFs as nucleotide strings in RF0 into aa sequences-this requires the nt strings becoming seq objects so translate() function can work...
 
 
+aa_ORF0 = [str(Seq(orf_nt).translate()) for orf_nt in ORF_rf0_list]
 
+orf0_long_aa=[]
+for i in aa_ORF0:
+    if len(i) > 300:
+        orf0_long_aa.append(i)
+print(orf0_long_aa)
 
