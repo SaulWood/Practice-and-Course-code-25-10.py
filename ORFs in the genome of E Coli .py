@@ -114,33 +114,38 @@ for i in range(0, len(rf0_for_trans)-2,3):
 
 #This code is designed to find all of the rf0 ORFs ie all the open reading frames within the frame shift 0 of the E Coli Genome.
 
-rf0_for_trans = "".join(rf0)
-seq = rf0_for_trans
-START = {"ATG","GTG","TTG"}
-STOP = {"TAA", "TAG","TGA" }
-ORF_rf0_list = []
-in_rf0_ORF = False
+#%%
+START = {"ATG", "GTG", "TTG"}
+STOP = {"TAA", "TAG", "TGA"}
+MIN_LENGTH = 100  # nucleotides; adjust as needed (common for E. coli)
+ORF_rf0_list = []  # Will store ORF sequences (as strings, without stop)
+in_ORF = False
 current_rf0_ORF = ""
-for i in range(0, len(seq)-2,3):
-    codon = seq[i:i+3]
+seq = rf0_for_trans
 
-    if not in_rf0_ORF:
+for i in range(0, len(seq) - 2, 3):
+    codon = seq[i:i + 3]
+    if len(codon) != 3:  # Safety, though range prevents it
+        break
+
+    if not in_ORF:
         if codon in START:
-        in_rf0_ORF = True
-        current_rf0_ORF = codon
-
-    else:#codon is in ORF.
+            in_ORF = True
+            current_ORF = codon  # Start collecting from start codon
+    else:
         if codon in STOP:
-        ORF_rf0_list.append(current_rf0_ORF)
-        current_rf0_ORF = ""
-        in_rf0_ORF = False
+            # Only append if long enough (exclude stop codon)
+            if len(current_ORF) >= MIN_LENGTH:
+                ORF_rf0_list.append(current_ORF)
+            # Reset for possible new ORF downstream
+            in_ORF = False
+            current_ORF = ""
         else:
-         current_rf0_ORF += codon
+            current_ORF += codon
 
-
-
-
-
+# Don't forget ORFs that run to the end!
+if in_ORF and len(current_ORF) >= MIN_LENGTH:
+    ORF_rf0_list.append(current_ORF)
 
 print("Number of ORFs found:", len(ORF_rf0_list))
 print("First ORF:", ORF_rf0_list[0])
@@ -151,15 +156,17 @@ print("first 20", ORF_rf0_list[0:20])
 aa_ORF0 = [str(Seq(orf_nt).translate()) for orf_nt in ORF_rf0_list]
 orf0_long_aa=[]
 for i in aa_ORF0:
-    if len(i) > 400:
+    if len(i) > 300:
         orf0_long_aa.append(i)
 print(orf0_long_aa)
 print(len(orf0_long_aa))
 print(orf0_long_aa[0])
+
 #%%
 #This code is wrong now-there are clearly stop codons within translated sequences, this means I don't have true ORFs.
 
 #%%
+'''
 t_s = "TTTATGATCGATCTAAGATAATCTAGTAGCTAGTGTAGCATCGTGATACGACTAGCATATGATCGACTAGCTTAATACGATCG"
 print(len(t_s))
 print(126/3)
@@ -187,5 +194,5 @@ for i in range(0, len(t_s)-2,3):
 print(ORF_test_list)
 print(len(ORF_test_list[0]))
 print(len(ORF_test_list[1]))
-
+'''
 #%%
